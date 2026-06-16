@@ -3,7 +3,6 @@
 # Build and push an image to Azure Container Registry
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
-
 trigger:
 - main
 
@@ -12,11 +11,11 @@ resources:
 
 variables:
   # Container registry service connection established during pipeline creation
-  #dockerRegistryServiceConnection: '956d3d0f-1439-4c55-8c37-c7a27f6f7994'
-  #imageRepository: 'bjune16imagerepoci'
-  #containerRegistry: 'june12contregistry.azurecr.io'
+  #dockerRegistryServiceConnection: 'f6643601-7833-4246-a529-ab32ed9a8513'
+  #imageRepository: 'bcipipline1image1'
+  #containerRegistry: 'feb20reg.azurecr.io'
   #dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
-  #tag: '$(Build.BuildId)'
+  tag: '$(Build.BuildId)'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -33,14 +32,15 @@ stages:
     - task: Docker@2
       displayName: Build and push an image to container registry
       inputs:
-        command: buildAndPush
-        repository: 'bjune16imagerepoci'
-        dockerfile: $(dockerfilePath) 
         containerRegistry: 'june12-dockerregistry-service-conn'
-        tags: |
-          $(tag)
-             
- # Task-2: Copy files (Copy files from a source folder to target folder)
+        repository: 'bjune16imagerepoci'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
+        tags: '$(tag)'
+## Publish Artifacts pipeline code in addition to Build and Push          
+    - bash: echo Contents in System Default Working Directory; ls -R $(System.DefaultWorkingDirectory)        
+    - bash: echo Before copying Contents in Build Artifact Directory; ls -R $(Build.ArtifactStagingDirectory)        
+    # Task-2: Copy files (Copy files from a source folder to target folder)
     # Source Directory: $(System.DefaultWorkingDirectory)/kube-manifests
     # Target Directory: $(Build.ArtifactStagingDirectory)
     - task: CopyFiles@2
@@ -51,9 +51,11 @@ stages:
         OverWrite: true
     # List files from Build Artifact Staging Directory - After Copy
     - bash: echo After copying to Build Artifact Directory; ls -R $(Build.ArtifactStagingDirectory)  
-    # Task-3: Publish build artifacts (Publish build to Azure Pipelines)           
+    # Task-3: Publish build artifacts (Publish build to Azure Pipelines)  
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'kube-manifests'
         publishLocation: 'Container'
+
+
