@@ -15,7 +15,7 @@ variables:
   #dockerRegistryServiceConnection: '956d3d0f-1439-4c55-8c37-c7a27f6f7994'
   #imageRepository: 'bjune16imagerepoci'
   #containerRegistry: 'june12contregistry.azurecr.io'
-  #dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile.txt'
+  #dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   #tag: '$(Build.BuildId)'
 
   # Agent VM image name
